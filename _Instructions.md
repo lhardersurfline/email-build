@@ -45,7 +45,7 @@ Destination follows intent, and Claude proposes it rather than asking open:
 - **Shared template = no** → deliver the preview and code; save to `Drafts/` if the teammate wants it kept.
 - A design token, readme, or other reference doc → `Context/`.
 
-**Always save both files.** Whenever a build is saved to `Outputs/` or `Drafts/`, write both the `.mjml` source and the compiled `.html` output, sharing the same stable filename (e.g. `WhatsNew_Template.mjml` and `WhatsNew_Template.html`). The `.html` is what gets pasted into Braze; the `.mjml` is what future edits should start from. Never save just one — if only the `.html` (or only the `.mjml`) exists for a build being finalized, generate and save the missing counterpart before finishing.
+**HTML only, by default.** Whenever a build is saved to `Outputs/` or `Drafts/`, save only the compiled `.html` — that's what gets pasted into Braze, and it's what this repo tracks. Don't save the `.mjml` source alongside it. Save the `.mjml` only if the teammate explicitly asks for it.
 
 **Commit flow**, by setup:
 
@@ -68,4 +68,4 @@ Versioning lives in git, so nothing is lost by replacing a file.
 
 ## Build pipeline
 
-MJML source → compile → BeautifulSoup prettify → placeholder / footer injection → final inline-table HTML. Use the `email-html-mjml` skill. Tokens, component specs, the footer Liquid tag, and known fixes live in `Context/surfline-email-template-context.md`. Save both the `.mjml` source and the final `.html` — see Finalizing above.
+MJML source → compile → BeautifulSoup prettify → placeholder / footer injection → final inline-table HTML. Use the `email-html-mjml` skill. Tokens, component specs, the footer Liquid tag, and known fixes live in `Context/surfline-email-template-context.md`. Only the final `.html` is saved to `Outputs/`/`Drafts/` — see Finalizing above.
