@@ -1,6 +1,6 @@
 # Session Readme — Marketing Footer Block
 **Date:** 08 June 2026
-**Output file:** `/Latest Outputs/marketing-footer-block-v08062026-v2.html`
+**Output file:** `Outputs/marketing-footer-block.html` (current live file)
 
 ---
 
@@ -74,8 +74,5 @@ Starting from `marketing-footer-block-v03062026.html`, the following edits were 
 
 ## Versioning
 
-| File | Location | Notes |
-|---|---|---|
-| `marketing-footer-block-v03062026.html` | `/Archive` | Original draft |
-| `marketing-footer-block-v08062026.html` | `/Archive` | First iteration 08 Jun |
-| `marketing-footer-block-v08062026-v2.html` | `/Latest Outputs` | Current version |
+Current live file: `Outputs/marketing-footer-block.html`. Earlier dated iterations
+(v03062026, v08062026, v08062026-v2, v08062026-v3) are retained in git history.
