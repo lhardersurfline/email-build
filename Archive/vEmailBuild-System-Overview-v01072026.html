@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How the vEmailBuild system works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#171717;
+    --panel:#1e1e1d;
+    --panel-2:#232322;
+    --border:#312f2b;
+    --text:#f2f0ea;
+    --text-dim:#98958c;
+    --teal:#5cc4b8;
+    --amber:#e8a33d;
+    --folder-archive:#9aa5ad;
+    --folder-context:#eab449;
+    --folder-drafts:#e2857a;
+    --folder-outputs:#3fa791;
+    --file-blue:#5b93d6;
+    --mono:'IBM Plex Mono',monospace;
+    --sans:'Inter',sans-serif;
+    --display:'Space Grotesk',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    padding:56px 20px 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  /* header */
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(28px,4vw,40px);
+    line-height:1.15;
+    margin-bottom:14px;
+    max-width:640px;
+  }
+  .sub{
+    color:var(--text-dim);
+    font-size:16px;
+    max-width:520px;
+    margin-bottom:56px;
+  }
+
+  .section-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-label::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--border);
+  }
+
+  /* ticket chip - signature element, echoes the vDDMMYYYY versioning convention */
+  .chip{
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.03em;
+    color:var(--bg);
+    background:var(--teal);
+    padding:3px 9px 3px 10px;
+    border-radius:3px;
+    position:relative;
+    white-space:nowrap;
+  }
+  .chip::after{
+    content:'';
+    position:absolute;
+    right:-1px;top:0;bottom:0;
+    width:1px;
+    background:repeating-linear-gradient(to bottom,var(--bg) 0 3px,transparent 3px 6px);
+  }
+  .chip.amber{background:var(--amber);}
+  .chip.ghost{
+    background:transparent;
+    color:var(--text-dim);
+    border:1px dashed var(--border);
+  }
+  .chip.ghost::after{display:none;}
+
+  /* input cards */
+  .inputs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 16px;
+  }
+  .card .tag{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.1em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .card h3{
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:8px;
+    line-height:1.35;
+  }
+  .card p{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+
+  .setup{
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px dashed var(--border);
+  }
+  .setup-label{
+    font-family:var(--mono);
+    font-size:9.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:4px;
+  }
+  .setup p{
+    font-size:12px;
+    color:var(--text-dim);
+    line-height:1.45;
+  }
+
+  .tree-panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:36px;
+  }
+  .tree-panel h3{
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:600;
+    margin-top:8px;
+  }
+  .tree{
+    margin-top:14px;
+  }
+  .tree-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .tree-row:last-child{border-bottom:none;}
+  .tree-row svg{width:16px;height:16px;flex-shrink:0;}
+  .tree-row .name{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text);
+  }
+  .tree-row .desc{
+    margin-left:auto;
+    color:var(--text-dim);
+    font-size:12px;
+  }
+
+  .converge{
+    text-align:center;
+    color:var(--border);
+    font-size:20px;
+    margin-bottom:36px;
+    letter-spacing:.3em;
+  }
+
+  /* pipeline */
+  .pipeline{
+    position:relative;
+    padding-left:28px;
+    margin-bottom:44px;
+  }
+  .pipeline::before{
+    content:'';
+    position:absolute;
+    left:7px;top:6px;bottom:6px;
+    width:1px;
+    background:var(--border);
+  }
+  .step{
+    position:relative;
+    padding-bottom:26px;
+    opacity:0;
+    animation:rise .5s ease forwards;
+  }
+  .step:last-child{padding-bottom:0;}
+  .step::before{
+    content:'';
+    position:absolute;
+    left:-28px;top:3px;
+    width:9px;height:9px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--teal);
+  }
+  .step-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:4px;
+    flex-wrap:wrap;
+  }
+  .step h4{
+    font-family:var(--display);
+    font-size:15px;
+    font-weight:600;
+  }
+  .step p{
+    font-size:13.5px;
+    color:var(--text-dim);
+    max-width:560px;
+  }
+  .step p .tool{
+    font-family:var(--mono);
+    color:var(--teal);
+    font-size:12.5px;
+  }
+
+  /* outputs */
+  .outputs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:44px;
+  }
+  .folder{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 16px;
+    position:relative;
+  }
+  .folder h3{
+    font-family:var(--mono);
+    font-size:14px;
+    margin-bottom:6px;
+  }
+  .folder p{
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+  .folder .dot{
+    position:absolute;
+    top:18px;right:16px;
+    width:7px;height:7px;
+    border-radius:50%;
+  }
+  .folder.drafts .dot{background:var(--amber);}
+  .folder.outputs .dot{background:var(--teal);}
+  .folder.archive .dot{background:var(--text-dim);}
+
+  /* footer */
+  .footer{
+    border-top:1px solid var(--border);
+    padding-top:24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .footer p{
+    font-size:13px;
+    color:var(--text-dim);
+    max-width:460px;
+  }
+  .footer .example{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text);
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:8px 12px;
+    border-radius:6px;
+  }
+
+  @keyframes rise{
+    from{opacity:0;transform:translateY(6px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .step{animation:none;opacity:1;}
+  }
+
+  @media (max-width:760px){
+    .inputs{grid-template-columns:1fr;}
+    .outputs{grid-template-columns:1fr;}
+    .tree-row .desc{margin-left:26px;flex-basis:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Claude vEmailBuild</div>
+  <h1>How a request turns into a finished email file</h1>
+  <p class="sub">Four inputs feed one build loop, which always lands in the same four folders. Nothing gets overwritten — every save is a new version.</p>
+
+  <div class="section-label">Inputs</div>
+  <div class="inputs">
+    <div class="card">
+      <div class="tag">Skill</div>
+      <h3>email-html-mjml</h3>
+      <p>Turns MJML into client-safe HTML. This is what actually compiles the email.</p>
+      <div class="setup">
+        <div class="setup-label">Setup</div>
+        <p>Install the modified email-html-mjml skill in Claude Desktop.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tag">MCPs</div>
+      <h3>Filesystem MCP<br>Figma MCP</h3>
+      <p>Filesystem reads/writes files on Leif's machine. Figma pulls specs and assets from whatever file is open in the desktop app.</p>
+      <div class="setup">
+        <div class="setup-label">Setup</div>
+        <p>Connect both MCP servers in Claude Desktop. Figma MCP only sees a file once it's open in the Figma desktop app.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tag">Instructions</div>
+      <h3>_Instructions.md</h3>
+      <p>The rulebook: never overwrite, always version, always preview before saving, always ask where to place the result.</p>
+      <div class="setup">
+        <div class="setup-label">Setup</div>
+        <p>Keep this file at the project root — it's re-read at the start of every session.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tree-panel">
+    <div class="tag">Folders</div>
+    <h3>.claude / Claude vEmailBuild</h3>
+    <div class="tree">
+      <div class="tree-row">
+        <svg viewBox="0 0 24 24" style="color:var(--folder-archive)"><path fill="currentColor" d="M3 5.5C3 4.67 3.67 4 4.5 4H9l2 2h8.5c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-15C3.67 20 3 19.33 3 18.5v-13z"/></svg>
+        <span class="name">Archive</span>
+        <span class="desc">Superseded versions</span>
+      </div>
+      <div class="tree-row">
+        <svg viewBox="0 0 24 24" style="color:var(--folder-context)"><path fill="currentColor" d="M3 5.5C3 4.67 3.67 4 4.5 4H9l2 2h8.5c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-15C3.67 20 3 19.33 3 18.5v-13z"/></svg>
+        <span class="name">Context</span>
+        <span class="desc">Style guides, readmes, handover notes</span>
+      </div>
+      <div class="tree-row">
+        <svg viewBox="0 0 24 24" style="color:var(--folder-drafts)"><path fill="currentColor" d="M3 5.5C3 4.67 3.67 4 4.5 4H9l2 2h8.5c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-15C3.67 20 3 19.33 3 18.5v-13z"/></svg>
+        <span class="name">Drafts</span>
+        <span class="desc">Work in progress</span>
+      </div>
+      <div class="tree-row">
+        <svg viewBox="0 0 24 24" style="color:var(--folder-outputs)"><path fill="currentColor" d="M3 5.5C3 4.67 3.67 4 4.5 4H9l2 2h8.5c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-15C3.67 20 3 19.33 3 18.5v-13z"/></svg>
+        <span class="name">Outputs</span>
+        <span class="desc">Current, ready-to-use versions</span>
+      </div>
+      <div class="tree-row">
+        <svg viewBox="0 0 24 24" style="color:var(--file-blue)"><path fill="currentColor" d="M6 3h7l5 5v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>
+        <span class="name">_Instructions.md</span>
+        <span class="desc">The rulebook</span>
+      </div>
+    </div>
+    <div class="setup">
+      <div class="setup-label">Setup</div>
+      <p>Create these five items once, in this exact structure, under .claude/Claude vEmailBuild.</p>
+    </div>
+  </div>
+
+  <div class="converge">↓ ↓ ↓ ↓</div>
+
+  <div class="section-label">Build loop</div>
+  <div class="pipeline">
+    <div class="step" style="animation-delay:.05s">
+      <div class="step-head"><span class="chip">01</span><h4>Read context + instructions</h4></div>
+      <p>Everything in <span class="tool">/Context</span> and <span class="tool">_Instructions.md</span> loads before any work starts.</p>
+    </div>
+    <div class="step" style="animation-delay:.15s">
+      <div class="step-head"><span class="chip">02</span><h4>Pull the design spec</h4></div>
+      <p>If a Figma file is open, <span class="tool">Figma MCP</span> reads exact layout, spacing, and copy from it.</p>
+    </div>
+    <div class="step" style="animation-delay:.25s">
+      <div class="step-head"><span class="chip">03</span><h4>Build or edit the email</h4></div>
+      <p>MJML is written or edited, then compiled to HTML via the <span class="tool">email-html-mjml</span> skill.</p>
+    </div>
+    <div class="step" style="animation-delay:.35s">
+      <div class="step-head"><span class="chip">04</span><h4>Preview in chat</h4></div>
+      <p>Both the rendered HTML and the raw code are shown — one to check visually, one to copy into an external previewer.</p>
+    </div>
+    <div class="step" style="animation-delay:.45s">
+      <div class="step-head"><span class="chip">05</span><h4>Leif signs off</h4></div>
+      <p>Once approved, Leif's told where it's going: <span class="tool">/Context</span>, <span class="tool">/Drafts</span>, or <span class="tool">/Outputs</span>.</p>
+    </div>
+    <div class="step" style="animation-delay:.55s">
+      <div class="step-head"><span class="chip">06</span><h4>Archive, then save</h4></div>
+      <p>Any prior version moves to <span class="tool">/Archive</span> via <span class="tool">Filesystem MCP</span> first — never deleted, never overwritten.</p>
+    </div>
+  </div>
+
+  <div class="converge">↓ ↓ ↓</div>
+
+  <div class="section-label">Where it lands</div>
+  <div class="outputs">
+    <div class="folder drafts"><span class="dot"></span>
+      <h3>/Drafts</h3>
+      <p>Work in progress — not yet approved.</p>
+    </div>
+    <div class="folder outputs"><span class="dot"></span>
+      <h3>/Outputs</h3>
+      <p>The current, ready-to-use version of a template.</p>
+    </div>
+    <div class="folder archive"><span class="dot"></span>
+      <h3>/Archive</h3>
+      <p>Every superseded version, kept — never deleted.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Every filename carries its own history, so nothing needs a changelog.</p>
+    <span class="example">Premium-Expiry<span style="color:var(--teal)">-v01072026</span></span>
+  </div>
+
+</div>
+</body>
+</html>

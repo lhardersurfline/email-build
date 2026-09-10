@@ -1,0 +1,15 @@
+# OS / editor noise
+desktop.ini
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Node / MJML build
+node_modules/
+npm-debug.log*
+
+# Local build scratch
+/email-build/
+*.tmp
