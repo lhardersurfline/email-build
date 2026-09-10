@@ -45,6 +45,8 @@ Destination follows intent, and Claude proposes it rather than asking open:
 - **Shared template = no** → deliver the preview and code; save to `Drafts/` if the teammate wants it kept.
 - A design token, readme, or other reference doc → `Context/`.
 
+**HTML only, by default.** Whenever a build is saved to `Outputs/` or `Drafts/`, save only the compiled `.html` — that's what gets pasted into Braze, and it's what this repo tracks. Don't save the `.mjml` source alongside it. Save the `.mjml` only if the teammate explicitly asks for it.
+
 **Commit flow**, by setup:
 
 - **Local clone** — Claude lists the changed files and drafts a commit message. The teammate commits and pushes.
@@ -66,4 +68,4 @@ Versioning lives in git, so nothing is lost by replacing a file.
 
 ## Build pipeline
 
-MJML source → compile → BeautifulSoup prettify → placeholder / footer injection → final inline-table HTML. Use the `email-html-mjml` skill. Tokens, component specs, the footer Liquid tag, and known fixes live in `Context/surfline-email-template-context.md`.
+MJML source → compile → BeautifulSoup prettify → placeholder / footer injection → final inline-table HTML. Use the `email-html-mjml` skill. Tokens, component specs, the footer Liquid tag, and known fixes live in `Context/surfline-email-template-context.md`. Only the final `.html` is saved to `Outputs/`/`Drafts/` — see Finalizing above.
