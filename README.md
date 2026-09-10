@@ -34,7 +34,7 @@ Two setups are supported, both pointing at this repo:
 
 Claude's standing project instructions live in [`claude-project-instructions.md`](./claude-project-instructions.md) — paste that block into your Claude project settings.
 
-New teammate? See [`SETUP.md`](./SETUP.md) to get connected. *(Coming next.)*
+New teammate? See [`SETUP.md`](./SETUP.md) to get connected.
 
 ## Build pipeline
 
