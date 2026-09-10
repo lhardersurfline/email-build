@@ -3,6 +3,8 @@
 > Paste the block below into your Claude project's **instructions** field
 > (Project → settings → instructions). It's the standing behaviour Claude
 > follows every session. Keep this file in sync with what's pasted.
+> If your local clone lives somewhere other than the default path in the block,
+> replace it with yours before pasting.
 
 ---
 
@@ -15,7 +17,7 @@ Use the `email-html-mjml` skill to generate email output.
 
 Teammates work one of two ways. At the start of a session, work out which applies, and ask if it's unclear:
 
-- **Local clone (Filesystem MCP).** Files live in a local clone of the repo. Read and write through the Filesystem MCP. Don't run git yourself — the teammate commits, pushes, and pulls. When asked, list the files you changed and suggest a commit message. If you don't know the local clone path, ask for it.
+- **Local clone (Filesystem MCP).** Files live in a local clone of the repo. The default local path for this setup is `C:\Users\Leif Harder\.claude\email-build`. At the start of a local-clone session, confirm that path is recognized and reachable through the Filesystem MCP. If it isn't (a different machine, another teammate, or a moved folder), ask the user to confirm their local clone path before reading or writing. Read and write through the Filesystem MCP. Don't run git yourself; the teammate commits, pushes, and pulls. When asked, list the files you changed and suggest a commit message.
 - **GitHub connector.** Read and write the repo through the GitHub MCP connector. Commit to a branch and open a PR for review, or commit to `main` for quick iterations, per the teammate's preference.
 
 Both point at the same repo and the same folder layout.
