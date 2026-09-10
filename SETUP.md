@@ -1,7 +1,9 @@
 # Setup — Surfline Email Build
 
-How to use Claude to build Surfline marketing emails. Everyone does two quick
-setup steps first, then picks how Claude gets the latest templates.
+How to use Claude to build Surfline marketing emails. Most people do two quick
+setup steps first, then pick how Claude gets the latest templates. If you're
+pushing updates and templates back to the repo regularly, skip ahead to
+**Use Claude Code** below instead.
 
 > **What's GitHub here?** Just an online shared folder that always holds the
 > newest email templates and standards. You don't need to know anything about it
@@ -48,12 +50,20 @@ downloads, always current, and no terminal or commands.
 1. In Claude's settings, connect the **GitHub** connector and give it access to the Surfline email folder (`lhardersurfline/email-build`).
 2. Start a chat in the shared project and ask for your email. Claude reads the current templates directly.
 
-### Prefer working from files on your computer? (maintainers)
-Keeps a linked copy of the shared folder on your machine.
+---
 
-1. Install **Git** once, then download a linked copy of the shared folder to your computer. Claude can give you the exact line to run.
-2. In **Claude Desktop**, turn on the **Filesystem** connector and allow the folder you downloaded into.
-3. Start a chat in the shared project. Claude reads the templates straight from that folder.
+## Pushing updates and templates yourself? Use Claude Code
+
+If you're regularly updating or adding templates in the shared folder, skip the
+project-and-copy/paste workflow above and use **Claude Code** instead. It runs
+on your computer, reads and writes the repo directly, and commits and pushes
+for you — no pasting commands into a terminal.
+
+1. **Install Claude Code.** See https://claude.ai/code for setup for your OS.
+2. **Install the GitHub MCP server** in Claude Code and connect it to `lhardersurfline/email-build`. Claude can walk you through this.
+3. **Create your local environment** — ask Claude Code to clone the repo to your computer, then open a session in that folder.
+4. **Skip the shared project.** You don't need it here — Claude Code isn't a claude.ai project, so there's no instructions field to paste into. At the start of a session, tell Claude to read `_Instructions.md` at the repo root; it has the full workflow (build brief, saving both the `.mjml` and `.html`, commit flow, etc.).
+5. **Ask for your email or template change.** Claude reads the current files, builds it, and commits/pushes (or opens a PR) directly — same as the GitHub connector, just running locally instead of in a claude.ai chat.
 
 ---
 
@@ -63,8 +73,7 @@ When your email is finished, Claude asks whether to make it a shared template.
 Say yes and it saves the change. How that reaches the shared folder depends on
 your setup:
 
-- **If you connected GitHub (the connector):** Claude does it for you. It asks whether to add your change straight into the live templates, or set it aside for someone to review first. Pick one and Claude handles the rest. No commands.
-- **If you work from a copy on your computer:** Claude writes the file, then gives you a few lines of text to publish it. You don't need to understand them. Open your terminal (on Windows that's **Git Bash**; on Mac, **Terminal**) in the project folder, paste the lines Claude gave you, and press Enter. That sends your update to the shared folder so teammates get it.
+- **If you connected GitHub (the connector), or you're using Claude Code:** Claude does it for you. It asks whether to add your change straight into the live templates, or set it aside for someone to review first (a PR). Pick one and Claude handles the rest. No commands to paste.
 
 ---
 
@@ -84,5 +93,5 @@ should live in Braze.
 
 - Just need an email, minimal fuss → **upload the files** (or skip if they're already in the shared project).
 - Building often and want it always current → **connect GitHub**.
-- Maintaining the templates for everyone → **work from a copy on your computer**, or use the **GitHub connector** to save changes back.
+- Pushing updates and templates back to the repo regularly → **use Claude Code** with the GitHub MCP, or the **GitHub connector** in the shared project.
 - Bringing your own images → add the **Braze** step.
