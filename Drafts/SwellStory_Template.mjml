@@ -1,0 +1,197 @@
+<mjml lang="en">
+  <mj-head>
+    <mj-title>Big Swell Incoming — Surfline</mj-title>
+    <mj-preview>A long-period west swell fills in this weekend — here's where to be.</mj-preview>
+
+    <mj-raw>
+      <meta name="color-scheme" content="light dark">
+      <meta name="supported-color-schemes" content="light dark">
+    </mj-raw>
+
+    <mj-raw>
+      <style>
+        @font-face {
+          font-family: 'Linear Sans';
+          src: url('https://wa.cdn-surfline.com/quiver/0.20.6/fonts/linear-sans/linear-sans-regular.woff2') format('woff2');
+          font-weight: 400;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Linear Sans';
+          src: url('https://wa.cdn-surfline.com/quiver/0.20.6/fonts/linear-sans/linear-sans-semibold.woff2') format('woff2');
+          font-weight: 600;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Linear Sans';
+          src: url('https://wa.cdn-surfline.com/quiver/0.20.6/fonts/linear-sans/linear-sans-bold.woff2') format('woff2');
+          font-weight: 700;
+          font-style: normal;
+        }
+      </style>
+    </mj-raw>
+
+    <mj-style>
+      @media (prefers-color-scheme: dark) {
+        .email-body { background-color: #121212 !important; }
+        .email-card { background-color: #1E1E1E !important; }
+        .body-text  { color: #F1F1F1 !important; }
+        .muted-text { color: #6B7280 !important; }
+      }
+    </mj-style>
+
+    <mj-attributes>
+      <mj-all font-family='Linear Sans, Arial, Helvetica, sans-serif' />
+      <mj-text font-size="16px" line-height="24px" color="#424242" padding="0" />
+      <mj-image padding="0" />
+      <mj-section padding="0" />
+      <mj-divider border-color="#DDE4F1" border-width="1px" border-style="solid" padding="0" />
+    </mj-attributes>
+
+    <mj-html-attributes>
+      <mj-selector path=".heading-h1 div">
+        <mj-html-attribute name="role">heading</mj-html-attribute>
+        <mj-html-attribute name="aria-level">1</mj-html-attribute>
+      </mj-selector>
+      <mj-selector path=".heading-h2 div">
+        <mj-html-attribute name="role">heading</mj-html-attribute>
+        <mj-html-attribute name="aria-level">2</mj-html-attribute>
+      </mj-selector>
+    </mj-html-attributes>
+  </mj-head>
+
+  <mj-body css-class="email-body" background-color="#F5F7FA" width="600px">
+
+    <!-- BANNER -->
+    <mj-section background-color="#171717" padding="20px 0">
+      <mj-column>
+        <mj-image
+          src="https://braze-images.com/appboy/communication/assets/image_assets/images/6a18d4583fd053008385595d/original.png?1780012119"
+          alt="Surfline"
+          width="29px"
+          height="40px"
+          align="center"
+          href="https://www.surfline.com/"
+          target="_blank"
+          padding="0" />
+      </mj-column>
+    </mj-section>
+
+    <!-- SECTION HEADER -->
+    <mj-section padding="28px 32px 20px 32px" background-color="#FFFFFF" css-class="email-card">
+      <mj-column>
+        <mj-text
+          css-class="muted-text"
+          font-size="11px" line-height="16px" font-weight="600"
+          color="#98A2AF" letter-spacing="0.08em"
+          padding="0 0 10px 0">
+          SWELL WATCH
+        </mj-text>
+        <mj-text
+          css-class="heading-h1 body-text"
+          font-size="28px" line-height="36px" font-weight="600"
+          color="#171717" padding="0">
+          A long-period west swell fills in this weekend.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- HERO IMAGE -->
+    <mj-section background-color="#FFFFFF" css-class="email-card" padding="16px 32px 0 32px">
+      <mj-column>
+        <mj-image
+          src="https://placehold.co/536x340/171717/FFFFFF?text=Hero+Image+Placeholder"
+          alt="Overhead surf breaking at a west-facing point break"
+          width="536px"
+          border-radius="12px"
+          fluid-on-mobile="true"
+          href="https://www.surfline.com/"
+          target="_blank" />
+      </mj-column>
+    </mj-section>
+
+    <!-- BODY COPY -->
+    <mj-section padding="24px 32px 0 32px" background-color="#FFFFFF" css-class="email-card">
+      <mj-column>
+        <mj-text
+          css-class="body-text"
+          font-size="16px" line-height="25px" color="#424242"
+          padding="0 0 12px 0">
+          A long-period swell out of the west-northwest is set to arrive late Friday, building through the weekend before easing off by Monday morning. Point breaks and exposed west swell magnets should see the most consistent size, with sets in the head-high-plus range at the better spots.
+        </mj-text>
+        <mj-text
+          css-class="body-text"
+          font-size="16px" line-height="25px" color="#424242"
+          padding="0 0 20px 0">
+          Winds look light in the early mornings before onshore flow picks up in the afternoons, so dawn patrol is the call. Check the 16-day forecast for your local spots to plan your session.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- DIVIDER -->
+    <mj-section padding="0 32px" background-color="#FFFFFF" css-class="email-card">
+      <mj-column>
+        <mj-divider />
+      </mj-column>
+    </mj-section>
+
+    <!-- FEATURE CARD: Forecast -->
+    <mj-section padding="24px 32px 0 32px" background-color="#FFFFFF" css-class="email-card">
+      <mj-column>
+        <mj-text
+          css-class="muted-text"
+          font-size="11px" line-height="16px" font-weight="600"
+          color="#98A2AF" letter-spacing="0.08em"
+          padding="0 0 6px 0">
+          TOOL
+        </mj-text>
+        <mj-text
+          css-class="heading-h2 body-text"
+          font-size="22px" line-height="30px" font-weight="600"
+          color="#171717" padding="0 0 6px 0">
+          Track it with the 16-Day Forecast
+        </mj-text>
+        <mj-text
+          css-class="body-text"
+          font-size="16px" line-height="25px" color="#424242"
+          padding="0 0 20px 0">
+          See exactly when the swell fills in at your home break, down to the hour.
+        </mj-text>
+        <mj-image
+          src="https://braze-images.com/appboy/communication/assets/image_assets/images/6a18d458256bf70083ce8b2b/original.png?1780012119"
+          alt="Go to 16-day forecast"
+          width="32px" height="32px"
+          align="left"
+          href="https://www.surfline.com/"
+          target="_blank"
+          padding="0 0 32px 0" />
+      </mj-column>
+    </mj-section>
+
+    <!-- PRIMARY CTA -->
+    <mj-section padding="20px 32px 36px 32px" background-color="#FFFFFF" css-class="email-card">
+      <mj-column>
+        <mj-button
+          href="https://www.surfline.com/"
+          target="_blank"
+          background-color="#3A70E0"
+          color="#FFFFFF"
+          font-family='Linear Sans, Arial, Helvetica, sans-serif'
+          font-size="16px"
+          font-weight="600"
+          line-height="20px"
+          inner-padding="14px 32px"
+          border-radius="99px"
+          align="center">
+          See the full forecast
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- FOOTER: injected via Braze content block -->
+    <mj-raw>
+      {{content_blocks.${Marketing_Footer_v062026}}}
+    </mj-raw>
+
+  </mj-body>
+</mjml>
