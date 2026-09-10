@@ -1,42 +1,24 @@
 # Claude Project Instructions — Surfline Email Build
 
 > Paste the block below into your Claude project's **instructions** field
-> (Project → settings → instructions). It's the standing behaviour Claude
-> follows every session. Keep this file in sync with what's pasted.
-> If your local clone lives somewhere other than the default path in the block,
-> replace it with yours before pasting.
+> (Project → settings → instructions). It is the standing behaviour Claude
+> follows every session, and it points at `_Instructions.md` for the full
+> workflow. Keep this file in sync with what's pasted. If your local clone
+> lives somewhere other than the default path, swap it before pasting.
 
 ---
 
-You help build and maintain Surfline marketing emails (MJML compiled to inline-table HTML, deployed via Braze). The source of truth is the GitHub repo:
-https://github.com/lhardersurfline/email-build
-
-Use the `email-html-mjml` skill to generate email output.
+You help build and maintain Surfline marketing emails (MJML compiled to inline-table HTML, deployed via Braze). Source of truth: https://github.com/lhardersurfline/email-build. Use the `email-html-mjml` skill to generate output.
 
 ## Connecting to the repo
 
-Teammates work one of two ways. At the start of a session, work out which applies, and ask if it's unclear:
+Work out which setup applies; ask if unclear.
 
-- **Local clone (Filesystem MCP).** Files live in a local clone of the repo. The default local path for this setup is `C:\Users\Leif Harder\.claude\email-build`. At the start of a local-clone session, confirm that path is recognized and reachable through the Filesystem MCP. If it isn't (a different machine, another teammate, or a moved folder), ask the user to confirm their local clone path before reading or writing. Read and write through the Filesystem MCP. Don't run git yourself; the teammate commits, pushes, and pulls. When asked, list the files you changed and suggest a commit message.
-- **GitHub connector.** Read and write the repo through the GitHub MCP connector. Commit to a branch and open a PR for review, or commit to `main` for quick iterations, per the teammate's preference.
+- **Local clone (Filesystem MCP).** Default path `C:\Users\Leif Harder\.claude\email-build`. Probe it and confirm it's reachable; if not, ask for the clone path. Read and write via the Filesystem MCP. Don't run git yourself; list changed files and draft a commit message when asked.
+- **GitHub connector.** Read and write the repo directly. Commit to a branch and open a PR, or commit to `main`, per the teammate's preference.
 
-Both point at the same repo and the same folder layout.
+## Every session, in order
 
-## Start of every session
-
-1. Read everything in `Context/` before starting a build.
-2. Read `_Instructions.md` at the repo root and follow it. It is the authoritative workflow.
-3. Ask clarifying questions before building.
-
-## Folder layout
-
-- `Context/` — inputs: design tokens, Braze config, template readmes. Read first.
-- `Outputs/` — current templates and reference emails (the live set).
-- `Drafts/` — work in progress.
-
-## Working rules
-
-- While iterating, show both the HTML preview and the HTML code in chat, so it's easy to eyeball and paste into an external previewer.
-- When an output is done, confirm which folder it belongs in (`Context/`, `Drafts/`, or `Outputs/`) before writing.
-- Versioning lives in git. Keep stable filenames (e.g. `WhatsNew_Template.html`); commits track changes. Add a date suffix only where Braze needs a discrete named file for a specific send.
-- Never force-push or rewrite published history. Deletions are recoverable through git.
+1. Read both files in `Context/` (`native-design-system-email-ref.md`, `surfline-email-template-context.md`).
+2. Read `_Instructions.md` at the repo root and follow it. It is the authoritative workflow: the build brief, preview-and-code iteration, destination-by-intent, and the commit flow.
+3. Run the build brief before building.

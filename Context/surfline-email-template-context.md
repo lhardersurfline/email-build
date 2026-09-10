@@ -383,6 +383,27 @@ Full-width pill button. Appears once at the bottom of the email. Only element th
 
 ---
 
+### Marketing Footer Block
+
+Standalone compiled footer, appended in Braze as a repeatable component (`marketing-footer-block.html` in `Outputs/`). Injected via the Liquid tag `{{content_blocks.${Marketing_Footer_v062026}}}` (see **Footer & Liquid Injection**). Structure, top to bottom: social icons row (Instagram, TikTok, YouTube, Facebook), legal / unsubscribe text, app store buttons, PARTNERS label, partner logos.
+
+| Element | Value |
+|---|---|
+| Background | `#121212` |
+| Text | `#ffffff` |
+| Social icons | 30×30px, 40px gap, centered |
+| Social icons padding | 48px top / 0 bottom |
+| Legal section padding | 24px top / 60px bottom |
+| App store badge | 166×51px, width + height fixed in both attributes and inline style (prevents squish) |
+| PARTNERS label | 11px / 600 / line-height 16px / letter-spacing 0.08em |
+| Address | 2261 Market St, Suite 10852, San Francisco, 94114, USA |
+
+Partner logo sizes (ratios preserved): WSL 68×20, El Salvador 96×23, Sun Bum 23×33, Vans 56×19, JS 88×17.
+
+The unsubscribe block is self-contained in this footer, unlike the What's New template where unsub is appended separately by Braze. Social icons are Braze-CDN hosted; app store badges and partner logos are Chamaileon-CDN hosted — confirm those remain reachable before a send.
+
+---
+
 ## Spacing System
 
 | Context | Value |
@@ -417,6 +438,41 @@ All links use `target="_blank"`. Inline text links (e.g. `mailto:`) use `style="
 
 ---
 
+## Footer & Liquid Injection
+
+Braze content-block Liquid tags (the marketing footer, and any others such as Highlight Cam Matches) must land **inside the outer wrapper `<td>`** that `mj-wrapper` compiles to — after the last content section's closing `</div>` and its MSO comment, before the outer wrapper table closes. Use `mj-raw` **inside** the `mj-wrapper` to inject them. `mj-raw` at body level ejects the tag outside the wrapper and breaks the layout.
+
+Correct tail:
+
+```html
+        <!--[if mso | IE]></td></tr></table></td></tr><![endif]-->
+
+        <!-- ── HIGHLIGHT CAM MATCHES ── -->
+        {{content_blocks.${Highlight_Cam_Matches_2}}}
+
+        <!-- ── MARKETING FOOTER ── -->
+        {{content_blocks.${Marketing_Footer_v062026}}}
+        <!--[if mso | IE]></table><![endif]-->
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+```
+
+`UK-Ireland-Summer-Outlook.html` is the confirmed reference for correct placement.
+
+| Mistake | Symptom |
+|---|---|
+| Tags placed after the article `</div>` (or `</body></html>`) | Footer renders at the wrong width; the black footer background is narrower than the email |
+| Tags inside a content section's `<tbody>` | Footer inherits that section's background color and max-width |
+
+**Liquid renders raw outside Braze.** Tags such as `{{${set_user_to_unsubscribed_url}}}` and `{{ "now" | date: "%Y" }}` show as literal text in any non-Braze preview. Strip or ignore them when eyeballing locally.
+
+**Local-preview black bar is a non-issue.** The footer block is a full standalone HTML document (its own `<!DOCTYPE>` / `<html>` / `<body>`). Previewed locally with the Liquid tag left as literal text, the browser sees the outer email left unclosed after the footer's early `</body></html>`, producing a black bar below the footer. Braze strips the standalone wrapper on injection, so this does not occur in Braze.
+
+---
+
 ## Known Issues & Decisions
 
 **font-family attribute quoting:** Do not use escaped inner quotes (`'"Linear Sans"'`) in MJML attribute values. MJML injects them literally into `style=""` HTML attributes, breaking rendering. Use `font-family='Linear Sans, Arial, Helvetica, sans-serif'` (no inner quotes). Multi-word font names without quotes still resolve correctly in CSS.
@@ -432,3 +488,9 @@ All links use `target="_blank"`. Inline text links (e.g. `mailto:`) use `style="
 **Unsubscribe block:** Intentionally omitted from this template. It is managed as a separate repeatable component and appended in Braze/the sending platform.
 
 **Output formatting:** Always deliver prettified HTML. MJML's `--config.minify=true` is required for correct mobile column behavior but produces single-line output. Run the prettify script before handing off.
+
+**Wrapper gutters / full-bleed variant:** The What's New template uses `mj-wrapper` lateral gutters (`padding="0 24px 32px 24px"`), giving 552px cards over the 600px body. Single-feature forecaster emails (UK/Ireland, Vicco) drop the lateral gutters (`padding="0"`) for a full-bleed card, keeping the inner `32px` section inset. Leftover hardcoded widths carried over from a gutter layout cause side gaps — recompute.
+
+**Content width formula:** usable content width = `600 − 2×wrapper_gutter − 2×card_inset`. Gutter layout: 600 − 48 − 64 = 488px. Full-bleed: 600 − 0 − 64 = 536px. Set the computed px on the image `<td>` and `width:100%` on the `<img>` for fluid scaling. On mobile, zero the wrapper's lateral padding via a `@media (max-width:479px)` override to prevent side gaps.
+
+**Asset hosting:** prefer Braze CDN for all production assets. Some legacy footer assets sit on Chamaileon CDN — confirm reachable before a send. Figma exports and other signed / temporary URLs are placeholders only; host on Braze CDN before production.
