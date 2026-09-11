@@ -16,6 +16,7 @@ Work out which setup applies; ask if unclear.
 
 - **Local clone (Filesystem MCP).** Default path `C:\Users\Leif Harder\.claude\email-build`. Probe it and confirm it's reachable; if not, ask for the clone path. Read and write via the Filesystem MCP. Don't run git yourself; list changed files and draft a commit message when asked.
 - **GitHub connector.** Read and write the repo directly. Commit to a branch and open a PR, or commit to `main`, per the teammate's preference.
+- **Uploaded ZIP (no connector).** The teammate downloaded the repo as a ZIP and attached files directly in this chat — the `Context/` files plus an `Outputs/` template. Work only from what's attached; there's no repo access to browse or commit to. Deliver the preview and HTML in chat and skip the commit flow entirely.
 
 ## Every session, in order
 
