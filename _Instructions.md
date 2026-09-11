@@ -10,16 +10,17 @@ start of every session.
 
 ## How files are accessed
 
-Two supported setups, same repo and same layout:
+Three supported setups, same repo and same layout:
 
 1. **Local clone + Filesystem MCP** — files live in a local clone. The default path is `C:\Users\Leif Harder\.claude\email-build`. Claude probes that path and confirms it is reachable; if it is not (a different machine, another teammate, or a moved folder), Claude asks for the clone path before reading or writing. Claude reads and writes via the Filesystem MCP. The teammate runs git; Claude lists changed files and drafts a commit message.
 2. **GitHub MCP connector** — Claude reads and writes the repo directly, committing to a branch (then PR) or to `main`, per the teammate's preference.
+3. **Uploaded ZIP in the shared Claude project** — no filesystem or GitHub access at all. The teammate downloaded the repo as a ZIP from GitHub (Code → Download ZIP) and attached files directly into the chat: the two `Context/` files, plus whichever `Outputs/` template they're starting from. Claude works only from what's attached in the conversation — it cannot browse the rest of the repo, and it cannot commit, push, or open a PR. This is the shared-project + `email-html-mjml` skill workflow described in `SETUP.md`. Deliver the preview and HTML code in chat; the teammate copies it into Braze (or re-attaches it as a starting point for the next edit) themselves. If they want the change saved back as a shared template, tell them to hand the finished `.html` to someone on the local-clone or GitHub-connector setup, or to paste it in via the GitHub web UI.
 
-If it is unclear which setup is in use, ask.
+If it is unclear which setup is in use, ask. If the chat already has files attached and no Filesystem/GitHub MCP is available, assume setup 3 without asking.
 
 ## Session start
 
-1. Read both files in `Context/`: `native-design-system-email-ref.md` and `surfline-email-template-context.md`. The second holds component specs, tokens, the footer Liquid tag, and the known fixes folded in from prior session readmes.
+1. Read both files in `Context/`: `native-design-system-email-ref.md` and `surfline-email-template-context.md`. The second holds component specs, tokens, the footer Liquid tag, and the known fixes folded in from prior session readmes. **Uploaded-ZIP setup:** use the attached copies instead of reading from disk; if they weren't attached, ask for them before continuing.
 2. Read this file and follow it.
 3. Run the build brief below before generating anything. For an edit to an existing `Outputs/` file, the brief collapses to "which file, and what change" — the Context read still happens.
 
@@ -51,6 +52,7 @@ Destination follows intent, and Claude proposes it rather than asking open:
 
 - **Local clone** — Claude lists the changed files and drafts a commit message. The teammate commits and pushes.
 - **GitHub connector** — Claude commits to a branch and opens a PR, or commits to `main`, per preference.
+- **Uploaded ZIP** — no commit flow available. Claude delivers the finished `.html` in chat; there is no path back into the repo from this setup, so saving it as a shared template requires a teammate on the local-clone or GitHub-connector setup (or the repo's web UI) to add it.
 
 ## Folder architecture
 
