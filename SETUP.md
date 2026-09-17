@@ -1,9 +1,8 @@
 # Setup — Surfline Email Build
 
-How to use Claude to build Surfline marketing emails. Most people do two quick
-setup steps first, then pick how Claude gets the latest templates. If you're
-pushing updates and templates back to the repo regularly, skip ahead to
-**Use Claude Code** below instead.
+How to use Claude to build Surfline marketing emails. Everyone does the same two
+setup steps, then picks one of three paths depending on how they want Claude to
+reach the templates — and whether they need to save work back.
 
 > **What's GitHub here?** Just an online shared folder that always holds the
 > newest email templates and standards. You don't need to know anything about it
@@ -26,62 +25,99 @@ There is a shared **Surfline Email Build** project in Claude. Open it and start 
 new chat there. Don't create your own project — the shared one already has
 Claude's instructions loaded, so it knows the workflow from the first message.
 
+Paths 1 and 2 run inside that project (or in a plain chat, with one extra step —
+see Path 1). Path 3 runs on your computer instead and doesn't use the project.
+
 ---
 
-## Then — choose how Claude gets the templates
+## Pick your path
 
-### Simplest: upload the files into your chat
-No accounts or connections.
+| | Path | Best for | Saves back to the repo? |
+|---|---|---|---|
+| **1** | Upload the files | Just need an email, minimal fuss | No |
+| **2** | GitHub Integration | Building often, want it always current | No |
+| **3** | Local clone + write access | Updating and adding shared templates | Yes |
 
-1. **Get the files from the shared folder.** On the GitHub page, click the green **Code** button, choose **Download ZIP**, and unzip it.
-2. **Attach two things in your chat:** the two files from the `Context` folder (`native-design-system-email-ref.md` and `surfline-email-template-context.md`), and the one template from the `Outputs` folder you want to start from (e.g. `WhatsNew_Template.html`, or a reference email like `Vicco-Incoming.html`).
-3. **Describe your email.** Claude runs a short brief (base, type, copy, images, links, and whether to share it as a template), then shows the preview and the code.
-4. **Use it.** Copy the HTML into your previewer or into Braze.
+---
+
+## Path 1 — Upload the files into your chat
+
+No accounts or connections. You take a copy of the shared folder and hand the
+relevant files to Claude.
+
+1. **Download the repo.** On the GitHub page, click the green **Code** button, choose **Download ZIP**, and unzip it.
+2. **Attach the files in your chat:**
+   - both files from `Context/` (`native-design-system-email-ref.md` and `surfline-email-template-context.md`)
+   - the one template from `Outputs/` you want to start from (e.g. `WhatsNew_Template.html`, or a reference email like `Vicco-Incoming.html`)
+   - optionally `_Instructions.md` from the repo root
+3. **Start the build.**
+   - **In the Email Build project:** just say *"let's build an email"* and attach the files. The project instructions already tell Claude what to do.
+   - **In a plain chat (no project):** you must also tell Claude to read the instructions — e.g. *"read the attached `_Instructions.md` and `Context/` files, then let's build an email."* Without that, Claude has no workflow loaded.
+4. **Answer the brief.** Claude asks for base, type, copy, images, links, and whether to share it as a template, then shows the preview and the code.
+5. **Use it.** Copy the HTML into your previewer or into Braze.
 
 When the templates change, download the ZIP again for the latest.
 
-> If the shared project already includes these files (check with your
-> maintainer), skip the upload and go straight to describing your email.
-
-### No more uploading: let Claude read the shared folder
-Connect GitHub once and Claude always pulls the latest templates itself. No
-downloads, always current, and no terminal or commands.
-
-1. In Claude's settings, connect the **GitHub** connector and give it access to the Surfline email folder (`lhardersurfline/email-build`).
-2. Start a chat in the shared project and ask for your email. Claude reads the current templates directly.
+**Saving back:** not possible on this path. Claude only sees what's attached. If
+your email should become a shared template, hand the finished `.html` to someone
+on Path 3, or add it yourself through the GitHub web UI.
 
 ---
 
-## Pushing updates and templates yourself? Use Claude Code
+## Path 2 — GitHub Integration (no downloading or uploading)
 
-If you're regularly updating or adding templates in the shared folder, skip the
-project-and-copy/paste workflow above and use **Claude Code** instead. It runs
-on your computer, reads and writes the repo directly, and commits and pushes
-for you — no pasting commands into a terminal.
+Connect GitHub once and Claude pulls the templates from the repo link itself. No
+ZIP, no attachments, always current.
 
-1. **Install Claude Code.** See https://claude.ai/code for setup for your OS.
-2. **Install the GitHub MCP server** in Claude Code and connect it to `lhardersurfline/email-build`. Claude can walk you through this.
-3. **Create your local environment** — ask Claude Code to clone the repo to your computer, then open a session in that folder.
-4. **Skip the shared project.** You don't need it here — Claude Code isn't a claude.ai project, so there's no instructions field to paste into. At the start of a session, tell Claude to read `_Instructions.md` at the repo root; it has the full workflow (build brief, saving both the `.mjml` and `.html`, commit flow, etc.).
-5. **Ask for your email or template change.** Claude reads the current files, builds it, and commits/pushes (or opens a PR) directly — same as the GitHub connector, just running locally instead of in a claude.ai chat.
+1. **Add the GitHub Integration.** In Claude's settings → Connectors, connect **GitHub** and give it access to `lhardersurfline/email-build`.
+2. **Enable the Claude in Chrome extension.** Required today — see the note below.
+3. **Add the repo link** to your chat or to the Email Build project: `https://github.com/lhardersurfline/email-build`
+4. **Ask for your email.** Claude reads `Context/`, `_Instructions.md`, and the `Outputs/` templates directly from the repo.
+
+### Required: Claude in Chrome
+
+The GitHub Integration connects and the repo link attaches correctly, but Claude
+currently **can't read the repo through that link on its own — even though the
+repo is public**. Enabling the **Claude in Chrome** extension lets Claude open
+and read the link, and that's the workaround until the underlying issue is fixed.
+
+- Install / enable Claude in Chrome, and stay signed in to your Claude account in that browser.
+- Use Claude in Chrome for these chats rather than the desktop app.
+- **Symptom if it's missing:** Claude says it can't access the repository, returns nothing for the link, or claims the files don't exist. That's this issue, not a broken link or a permissions problem. Enable the extension and retry, or fall back to Path 1 and upload the files.
+
+**Saving back:** treat this path as read-only. Claude delivers the preview and
+HTML in chat; getting a finished template into the repo goes through Path 3 or
+the GitHub web UI.
 
 ---
 
-## Saving your email back for everyone
+## Path 3 — Local clone with write access
 
-When your email is finished, Claude asks whether to make it a shared template.
-Say yes and it saves the change. How that reaches the shared folder depends on
-your setup:
+For anyone regularly updating or adding templates in the shared folder. Claude
+works against a real clone on your computer and performs the git write actions —
+commit, push, PR — for you.
 
-- **If you connected GitHub (the connector), or you're using Claude Code:** Claude does it for you. It asks whether to add your change straight into the live templates, or set it aside for someone to review first (a PR). Pick one and Claude handles the rest. No commands to paste.
+1. **Install Claude Code.** See https://claude.ai/code for setup for your OS. (Claude Desktop with a Filesystem MCP server pointed at the clone works the same way.)
+2. **Clone the repo.** Ask Claude to clone `lhardersurfline/email-build` to your computer, then open a session in that folder. The default clone path in our instructions is `C:\Users\Leif Harder\.claude\email-build`; if yours is elsewhere, tell Claude the path at the start of the session.
+3. **Connect the GitHub MCP server** in Claude Code and point it at `lhardersurfline/email-build`. Claude can walk you through this. This is what lets Claude push and open PRs.
+4. **Skip the shared project.** Claude Code isn't a claude.ai project, so there's no instructions field. At the start of a session, tell Claude to read `_Instructions.md` at the repo root — it has the full workflow.
+5. **Ask for your email or template change.** Claude reads the current files, builds, and commits/pushes (or opens a PR) directly.
+
+**Saving back:** full access. When your email is finished Claude asks whether to
+make it a shared template. Say yes and it asks whether to add the change straight
+into the live templates on `main`, or set it aside for review as a PR. Pick one
+and Claude handles the rest — no commands to paste.
 
 ---
 
-## Optional — using your own images
+## Optional on any path — using your own images
 
-If your images aren't hosted anywhere yet, connect the **Braze** connector. Then,
-when Claude asks about images in the brief, attach your files and Claude uploads
-them to the Braze media library and drops the links into the email.
+If your images aren't hosted anywhere yet, connect the **Braze** connector
+(settings → Connectors). Then, when Claude asks about images in the brief, attach
+your image files and Claude uploads them to the Braze media library and drops the
+returned CDN links straight into the email build.
+
+This works on all three paths — it's independent of how Claude reads the repo.
 
 Without it, host the images yourself and paste the links into the brief. Images
 from Figma or other temporary links expire, so anything going to a real send
@@ -91,7 +127,7 @@ should live in Braze.
 
 ## Which one am I?
 
-- Just need an email, minimal fuss → **upload the files** (or skip if they're already in the shared project).
-- Building often and want it always current → **connect GitHub**.
-- Pushing updates and templates back to the repo regularly → **use Claude Code** with the GitHub MCP, or the **GitHub connector** in the shared project.
-- Bringing your own images → add the **Braze** step.
+- Just need an email, minimal fuss → **Path 1**, upload the files.
+- Building often and want it always current → **Path 2**, GitHub Integration (plus Claude in Chrome).
+- Pushing updates and templates back to the repo regularly → **Path 3**, local clone.
+- Bringing your own unhosted images → add the **Braze** connector to whichever path you're on.
