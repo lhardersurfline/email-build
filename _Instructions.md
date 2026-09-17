@@ -8,30 +8,77 @@ start of every session.
 
 ---
 
-## How files are accessed
+## Identify the path first
 
-Three supported setups, same repo and same layout:
+Three supported paths, same repo and same layout. The path decides what Claude
+can read, and whether anything can be saved back. Work it out before building;
+ask if it's unclear.
 
-1. **Local clone + Filesystem MCP** — files live in a local clone. The default path is `C:\Users\Leif Harder\.claude\email-build`. Claude probes that path and confirms it is reachable; if it is not (a different machine, another teammate, or a moved folder), Claude asks for the clone path before reading or writing. Claude reads and writes via the Filesystem MCP. The teammate runs git; Claude lists changed files and drafts a commit message.
-2. **GitHub MCP connector** — Claude reads and writes the repo directly, committing to a branch (then PR) or to `main`, per the teammate's preference.
-3. **Uploaded ZIP in the shared Claude project** — no filesystem or GitHub access at all. The teammate downloaded the repo as a ZIP from GitHub (Code → Download ZIP) and attached files directly into the chat: the two `Context/` files, plus whichever `Outputs/` template they're starting from. Claude works only from what's attached in the conversation — it cannot browse the rest of the repo, and it cannot commit, push, or open a PR. This is the shared-project + `email-html-mjml` skill workflow described in `SETUP.md`. Deliver the preview and HTML code in chat; the teammate copies it into Braze (or re-attaches it as a starting point for the next edit) themselves. If they want the change saved back as a shared template, tell them to hand the finished `.html` to someone on the local-clone or GitHub-connector setup, or to paste it in via the GitHub web UI.
+### Path 1 — Upload (files attached in the chat)
 
-If it is unclear which setup is in use, ask. If the chat already has files attached and no Filesystem/GitHub MCP is available, assume setup 3 without asking.
+No filesystem and no GitHub access. The teammate downloaded the repo as a ZIP
+(Code → Download ZIP) and attached files directly into the conversation: the two
+`Context/` files, plus whichever `Outputs/` template they're starting from, and
+possibly `_Instructions.md`.
+
+- Work only from what's attached. Don't claim to browse the rest of the repo.
+- If the `Context/` files weren't attached, ask for them before continuing.
+- **No write-back.** No commit, push, or PR is possible. Deliver the preview and the HTML code in chat; the teammate pastes it into Braze, or re-attaches it as the starting point next time.
+- If they want the change saved as a shared template, tell them to hand the finished `.html` to a Path 3 teammate, or to add it through the GitHub web UI.
+
+**Detection:** files are attached and no Filesystem MCP, GitHub MCP, or readable
+repo link is available. Assume Path 1 without asking.
+
+### Path 2 — GitHub Integration (repo link, read-only)
+
+The teammate connected the GitHub Integration to `lhardersurfline/email-build`
+and added the repo link to the chat or project. No upload needed; the repo is
+read live, so it's always current.
+
+- Read `Context/`, this file, and the `Outputs/` templates from the repo link.
+- **Known issue — Claude in Chrome required.** Reading the repo through the link fails on its own, even though the repo is public. The Claude in Chrome extension is the working workaround. If the link can't be read, say so plainly and name the cause: this is the known GitHub Integration reading issue, not a broken link or a permissions problem. Tell them to enable Claude in Chrome and retry, or to fall back to Path 1 and attach the files. Don't guess at template contents or build from memory.
+- **Treat as read-only.** Don't promise a commit, push, or PR on this path. Same write-back advice as Path 1: a Path 3 teammate or the GitHub web UI.
+
+**Detection:** a repo link is present in the conversation or project and no local
+clone is in play.
+
+### Path 3 — Local clone with write access
+
+A real clone on the teammate's machine, reached through the Filesystem MCP (or
+Claude Code working in the repo directory), plus the GitHub MCP for git write
+actions. This is the only path that can save work back.
+
+- Default clone path: `C:\Users\Leif Harder\.claude\email-build`. Probe it and confirm it's reachable; if it isn't (a different machine, another teammate, a moved folder), ask for the clone path before reading or writing.
+- Read and write files directly.
+- **Write-back available:** commit and push to `main`, or commit to a branch and open a PR — per the teammate's preference. Ask which before pushing.
+
+**Detection:** Filesystem MCP or a Claude Code session in the repo directory.
+
+## Optional on every path — Braze MCP for images
+
+Independent of the path above. If the Braze connector is available and the
+teammate has raw image files rather than hosted URLs, offer to upload them to the
+Braze media library and use the returned CDN URLs directly in the build. Without
+it, the teammate supplies hosted URLs themselves. Figma exports and other
+signed/temporary URLs are placeholders — they must be Braze-hosted before
+production.
+
+---
 
 ## Session start
 
-1. Read both files in `Context/`: `native-design-system-email-ref.md` and `surfline-email-template-context.md`. The second holds component specs, tokens, the footer Liquid tag, and the known fixes folded in from prior session readmes. **Uploaded-ZIP setup:** use the attached copies instead of reading from disk; if they weren't attached, ask for them before continuing.
+1. Read both files in `Context/`: `native-design-system-email-ref.md` and `surfline-email-template-context.md`. The second holds component specs, tokens, the footer Liquid tag, and the known fixes folded in from prior session readmes. **Path 1:** use the attached copies; if they weren't attached, ask for them. **Path 2:** read them from the repo link.
 2. Read this file and follow it.
 3. Run the build brief below before generating anything. For an edit to an existing `Outputs/` file, the brief collapses to "which file, and what change" — the Context read still happens.
 
 ## Build brief (ask before building)
 
-1. **Base** — new email, or build off an existing template? (List the current `Outputs/` files as options.)
+1. **Base** — new email, or build off an existing template? (List the current `Outputs/` files as options; on Path 1, list what's attached.)
 2. **Type** — editorial, promo, transactional, or other.
 3. **Copy** — headline, body, CTA label, and subject + preview text. Never invent copy; use exactly what is supplied. Generate copy only when explicitly asked.
-4. **Assets** — hero and any graphics, plus where they are hosted (Braze CDN URL, or a Figma node to pull). If the teammate has raw asset files and the Braze MCP is connected, offer to upload them to the Braze media library and use the returned CDN URL. Figma exports and other signed/temporary URLs are placeholders — they must be Braze-hosted before production.
+4. **Assets** — hero and any graphics, plus where they are hosted (Braze CDN URL, or a Figma node to pull). If the teammate has raw asset files and the Braze MCP is connected, offer the upload described above.
 5. **Links / URLs** — CTA destinations, plus UTMs if any.
-6. **Share as template?** — "Once finalized, do you want to share this as a reusable template?" Store the answer; it drives the finalizing step below.
+6. **Share as template?** — "Once finalized, do you want to share this as a reusable template?" Store the answer; it drives the finalizing step below. On Paths 1 and 2, flag up front that saving it back requires a Path 3 teammate or the GitHub web UI.
 
 ## While building
 
@@ -48,11 +95,11 @@ Destination follows intent, and Claude proposes it rather than asking open:
 
 **HTML only, by default.** Whenever a build is saved to `Outputs/` or `Drafts/`, save only the compiled `.html` — that's what gets pasted into Braze, and it's what this repo tracks. Don't save the `.mjml` source alongside it. Save the `.mjml` only if the teammate explicitly asks for it.
 
-**Commit flow**, by setup:
+**Commit flow**, by path:
 
-- **Local clone** — Claude lists the changed files and drafts a commit message. The teammate commits and pushes.
-- **GitHub connector** — Claude commits to a branch and opens a PR, or commits to `main`, per preference.
-- **Uploaded ZIP** — no commit flow available. Claude delivers the finished `.html` in chat; there is no path back into the repo from this setup, so saving it as a shared template requires a teammate on the local-clone or GitHub-connector setup (or the repo's web UI) to add it.
+- **Path 1 (Upload)** — no commit flow. Deliver the finished `.html` in chat. There's no route back into the repo from here.
+- **Path 2 (GitHub Integration)** — read-only. Same as Path 1: deliver in chat and point at Path 3 or the GitHub web UI for saving back.
+- **Path 3 (Local clone)** — write the files, then commit and push to `main`, or commit to a branch and open a PR, per the teammate's preference. Ask which before pushing.
 
 ## Folder architecture
 
