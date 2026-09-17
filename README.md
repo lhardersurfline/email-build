@@ -50,10 +50,6 @@ The full, authoritative workflow is in [`_Instructions.md`](./_Instructions.md).
 4. Keep stable filenames; git commits track versions. Add a date suffix only where Braze needs a discrete named file.
 5. Never force-push or rewrite history; deletions are recoverable through git.
 
-Claude's standing project instructions live in
-[`claude-project-instructions.md`](./claude-project-instructions.md) — paste that
-block into the Email Build project's instructions field.
-
 New teammate? See [`SETUP.md`](./SETUP.md) to get connected.
 
 ## Build pipeline
