@@ -125,6 +125,34 @@ should live in Braze.
 
 ---
 
+## Example prompts
+
+Two common ways people kick off a build. Copy one, swap in your own details.
+
+### 1. Reusing a template we've already set up
+
+Claude will normally ask you for these inputs one at a time. If you already have
+them all, drop them in up front and Claude will just confirm or ask about
+anything missing instead of asking from scratch.
+
+> Generate an email for this incoming, leveraging our outlook / incoming templates. Here's some of the inputs, clarify any missing items before building:
+> Image URL: https://braze-images.com/appboy/communication/assets/image_assets/images/6aad659660c6eb00888f850f/original.png?1789748629
+> CTA link: https://www.surfline.com/surf-news/autumn-equinox-delivers-for-western-regions-of-the-uk-and-ireland/3IlprTV0FbWqM5nsqxJA6A
+> H1: Autumn Equinox Delivers for Western Regions of the UK and Ireland
+> Body: Summer-like warmth along with settled conditions at last.
+> CTA Text: See what's coming
+> Overline: INCOMING
+
+### 2. Building a new email from a Figma design
+
+Share the Figma link, attach the images that need to go in the email, and ask
+Claude to upload them to the Braze media library so the output uses real CDN
+links instead of temporary Figma ones.
+
+> I'd like you to build this email (→ [www.figma.com](https://www.figma.com)) for me. Please use the assets from the attached images. You can upload the images to the Braze media library in the Surfline workspace and use the source code provided for the image urls in your output. Once you've finished building the HTML, go ahead and build the email in Braze as an email template.
+
+---
+
 ## Which one am I?
 
 - Just need an email, minimal fuss → **Path 1**, upload the files.
